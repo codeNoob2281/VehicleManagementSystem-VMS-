@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查勘车辆管理系统</title>
+    <link rel="icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link href="resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="resource/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="resource/css/style.min.css" rel="stylesheet">
+    <script type="text/javascript" src="resource/js/jquery.min.js"></script>
+    <script type="text/javascript" src="resource/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="resource/js/perfect-scrollbar.min.js"></script>
+    <script type="text/javascript" src="resource/js/main.min.js"></script>
+    <!--    vue-->
+    <script type="text/javascript" src="resource/js/vue.min.js"></script>
+
+    <style rel="stylesheet">
+        li a {
+            text-align: left !important;
+        }
+
+        #lyear-aside-toggler {
+            display: inline-block;
+            position: relative;
+            top: 7px;
+            margin-left: 20px;
+        }
+
+        #topbar-right {
+            width: 200px;
+            display: inline-block;
+            float: right;
+            margin-top: 8px;
+        }
+        main{
+            padding-bottom: 200px;
+        }
+    </style>
+</head>
+<body>
+<div id="vue-tpl">
+    <!--左侧导航-->
+    <aside class="lyear-layout-sidebar">
+        <!--logo-->
+        <div id="logo" class="sidebar-header">
+            <a href="index.html">
+                <p style="font-size: large;margin-top: 20px;margin-bottom: 20px;
+        font-weight: bolder;font-family: '圆体'">查勘车辆管理系统</p>
+            </a>
+            <!--  导航栏  -->
+            <div class="lyear-layout-sidebar-scroll">
+                <nav class="sidebar-main">
+                    <ul class="nav nav-drawer">
+                        <li class="nav-item active">
+                            <a href="index.html">
+                                <i class="mdi mdi-home"></i>
+                                <span>首页</span>
+                            </a>
+                        </li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="javascript:void(0)"><i class="mdi mdi-car"></i>车辆借还</a>
+                            <ul class="nav nav-subnav">
+                                <li><a href="borrowCar.html">借车</a></li>
+                                <li><a href="returnCar.html">还车</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item nav-item-has-subnav">
+                            <a href="javascript:void(0)"><i class="mdi mdi-traffic-light"></i>违章处理</a>
+                            <ul class="nav nav-subnav">
+                                <li><a href="undoViolation.html">未处理违章</a></li>
+                                <li><a href="historyViolation.html">查看历史违章</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </aside>
+    <!--左侧导航END-->
+
+    <!--头部信息栏-->
+    <header class="lyear-layout-header">
+
+        <div class="topbar-left">
+            <div class="lyear-aside-toggler" id="lyear-aside-toggler">
+                <span class="lyear-toggler-bar"></span>
+                <span class="lyear-toggler-bar"></span>
+                <span class="lyear-toggler-bar"></span>
+            </div>
+            <span class="navbar-page-title"> 首页 </span>
+            <div id="topbar-right">
+                <img class="img-avatar img-avatar-48 m-r-10" src="resource/img/user-logo.jpg" alt="用户头像"/>
+                <a href="javascript:void(0)" data-toggle="dropdown">
+                    <span>{{username}} <span class="caret"></span></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="#"><i class="mdi mdi-account"></i> 个人信息</a></li>
+                    <li><a href="#"><i class="mdi mdi-lock-outline"></i> 修改密码</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#"><i class="mdi mdi-logout-variant"></i> 退出登录</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+<!--    头部信息栏END-->
+
+<!-- 主要内容   -->
+<main class="lyear-layout-content" style="margin-left: 5%;width: 90%;margin-top: 10px;">
+
+   <div class="row">
+       <div class="col-sm-6 col-lg-3">
+           <div class="card bg-primary">
+               <div class="card-body clearfix">
+                   <div class="pull-right">
+                       <p class="h6 text-white m-t-0">今日已执行任务</p>
+                       <p class="h3 text-white m-b-0 fa-1-5x">{{taskComplete}}次</p>
+                   </div>
+                   <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-check-circle-outline fa-1-5x"></i></span> </div>
+               </div>
+           </div>
+       </div>
+       <div class="col-sm-6 col-lg-3">
+           <div class="card bg-danger">
+               <div class="card-body clearfix">
+                   <div class="pull-right">
+                       <p class="h6 text-white m-t-0">未处理违章</p>
+                       <p class="h3 text-white m-b-0 fa-1-5x">{{unprocessedViolation}}条</p>
+                   </div>
+                   <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-traffic-light fa-1-5x"></i></span> </div>
+               </div>
+           </div>
+       </div>
+       <div class="col-sm-6 col-lg-3">
+           <div class="card bg-warning">
+               <div class="card-body clearfix">
+                   <div class="pull-right">
+                       <p class="h6 text-white m-t-0">近一个月违章</p>
+                       <p class="h3 text-white m-b-0 fa-1-5x">{{monthlyViolation}}次</p>
+                   </div>
+                   <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-information fa-1-5x"></i></span> </div>
+               </div>
+           </div>
+       </div>
+       <div class="col-sm-6 col-lg-3">
+           <div class="card bg-cyan">
+               <div class="card-body clearfix">
+                   <div class="pull-right">
+                       <p class="h6 text-white m-t-0">员工绩效考核评分</p>
+                       <p class="h3 text-white m-b-0 fa-1-5x">{{finalScore}}分</p>
+                   </div>
+                   <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-chart-line fa-1-5x"></i></span> </div>
+               </div>
+           </div>
+       </div>
+   </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>待执行任务</h4>
+                </div>
+                <div class="card-body">
+                <p class="text-center" style="margin-bottom: 0;font-size:medium"
+                   v-if="isHaveTask==false">当前没有等待执行的任务</p>
+                 <table class="table table-striped" v-if="isHaveTask==true">
+                     <thead><th>#</th><th>事故发生地</th><th>事故发生时间</th><th>被保人手机号</th><th>操作</th></thead>
+                     <tr v-for="(value,index) in accidentList">
+                         <th scope="row">{{index+1}}</th><td>({{value.accidentLocation_x}},{{value.accidentLocation_y}})</td>
+                         <td>{{value.accidentTime.toLocaleString()}}</td><td>{{value.tel}}</td>
+                         <td><button class="btn btn-label btn-info" v-bind:id="'taskBtn_'+(index+1)" @click="getTask">
+                             <label><i class="mdi mdi-checkbox-marked-circle-outline"></i></label> 接受任务</button>
+                         </td>
+                     </tr>
+                 </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>待处理违章</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-center" style="margin-bottom: 0;font-size:medium"
+                       v-if="isHaveViolation==false">当前没有未处理违章</p>
+                    <div v-if="isHaveViolation==true">
+                    <table class="table table-striped" >
+                        <thead><th>#</th><th>违章车牌</th><th>违章地点</th><th>违章时间</th><th>违章内容</th></thead>
+                        <tr v-for="(value,index) in violationList">
+                            <th scope="row">{{index+1}}</th><td>{{value.carNum}}</td><td>({{value.location_x}},{{value.location_y}})</td>
+                            <td>{{value.time.toLocaleString()}}</td><td>{{value.content}}</td>
+                        </tr>
+                    </table>
+                     <a href="undoViolation.html"><button class="btn btn-info btn-block">前去处理</button></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+</div>
+
+
+<script>
+    let data={
+        username: "赵子龙",
+        taskComplete:5,
+        unprocessedViolation:3,
+        monthlyViolation:15,
+        finalScore:86.57,
+        isHaveTask:true,//是否收到任务
+        accidentList:[
+            {accidentLocation_x:11,accidentLocation_y:11,accidentTime:new Date("2021/11/28 07:12:12"),tel:"13422233335"},
+            {accidentLocation_x:35,accidentLocation_y:27,accidentTime:new Date("2021/11/28 12:23:25"),tel:"13422233374"},
+            {accidentLocation_x:28,accidentLocation_y:98,accidentTime:new Date("2021/11/28 14:25:35"),tel:"13422233398"}
+        ],
+        isHaveViolation:true,//是否有未处理违章
+        violationList:[
+            {carNum:"浙J123T",location_x:4,location_y:9,time:new Date("2021/11/28 12:12:12"),content:"闯红灯"},
+            {carNum:"浙J145T",location_x:45,location_y:29,time:new Date("2021/11/28 15:28:12"),content:"逆行"},
+            {carNum:"浙J235F",location_x:124,location_y:239,time:new Date("2021/11/28 07:36:12"),content:`超速行驶`}
+        ],
+        isOntask:false//是否已接受一项任务
+
+    };
+
+
+    var app = new Vue({
+        el: "#vue-tpl",
+        data: data,
+        methods:{
+            getTask:function (e,){
+                let id= e.path[0].id;
+                if(!data.isOntask){
+                    $(`#${id}`).attr('class','btn btn-label btn-primary');
+                    $(`#${id}`).html(`<label><i class="mdi mdi-checkbox-marked-circle-outline"></i></label> 接受成功`);
+                   $(`#${id}`).attr('disabled','true');
+                    data.isOntask=true;
+                }else{
+                    alert("只能接受一个任务");
+                }
+
+            }
+        }
+    })
+
+
+</script>
+
+</body>
+</html>
