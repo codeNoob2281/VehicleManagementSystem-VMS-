@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context reloadable="true">
+<Resource
+   name="VMS_DS"
+   type="javax.sql.DataSource"
+   maxTotal="4"
+   maxIdle="2"
+   driverClassName="com.mysql.cj.jdbc.Driver"
+   url="jdbc:mysql://localhost:3306/vms1"
+   username="root"
+   password="123456"
+   maxWaitMills="5000"
+/>
+
+</Context>

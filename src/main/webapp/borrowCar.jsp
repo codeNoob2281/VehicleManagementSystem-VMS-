@@ -1,9 +1,14 @@
+<%@ page import="com.stat.UserInfo" %>
+<%@ page import="com.model.Task" %>
+<%@ page import="com.model.Car" %>
+<%@ page import="com.model.CarRequest" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>查勘车辆管理系统</title>
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="resource/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
     <link href="resource/css/bootstrap.min.css" rel="stylesheet">
     <link href="resource/css/materialdesignicons.min.css" rel="stylesheet">
@@ -44,7 +49,7 @@
     <aside class="lyear-layout-sidebar">
         <!--logo-->
         <div id="logo" class="sidebar-header">
-            <a href="index.html">
+            <a href="index">
                 <p style="font-size: large;margin-top: 20px;margin-bottom: 20px;
         font-weight: bolder;font-family: '圆体'">查勘车辆管理系统</p>
             </a>
@@ -53,7 +58,7 @@
                 <nav class="sidebar-main">
                     <ul class="nav nav-drawer">
                         <li class="nav-item">
-                            <a href="index.html">
+                            <a href="index">
                                 <i class="mdi mdi-home"></i>
                                 <span>首页</span>
                             </a>
@@ -61,15 +66,15 @@
                         <li class="nav-item nav-item-has-subnav active open">
                             <a href="javascript:void(0)"><i class="mdi mdi-car"></i>车辆借还</a>
                             <ul class="nav nav-subnav">
-                                <li class="active"><a href="borrowCar.html">借车</a></li>
-                                <li><a href="returnCar.html">还车</a></li>
+                                <li class="active"><a href="borrowCar">借车</a></li>
+                                <li><a href="returnCar">还车</a></li>
                             </ul>
                         </li>
                         <li class="nav-item nav-item-has-subnav">
                             <a href="javascript:void(0)"><i class="mdi mdi-traffic-light"></i>违章处理</a>
                             <ul class="nav nav-subnav">
-                                <li><a href="undoViolation.html">未处理违章</a></li>
-                                <li><a href="historyViolation.html">查看历史违章</a></li>
+                                <li><a href="undoViolation">未处理违章</a></li>
+                                <li><a href="historyViolation">查看历史违章</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -92,7 +97,7 @@
             <div id="topbar-right">
                 <img class="img-avatar img-avatar-48 m-r-10" src="resource/img/user-logo.jpg" alt="用户头像"/>
                 <a href="javascript:void(0)" data-toggle="dropdown">
-                    <span>{{username}} <span class="caret"></span></span>
+                    <span><%=UserInfo.Username%> <span class="caret"></span></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li><a href="#"><i class="mdi mdi-account"></i> 个人信息</a></li>
@@ -109,6 +114,10 @@
     <main class="lyear-layout-content" style="margin-left: 5%;width: 90%;margin-top: 10px;">
         <div class="row">
             <div class="col-lg-12">
+                <%
+                    Task task = (Task) session.getAttribute("task");
+                    if(task!=null){
+                %>
                 <!--查勘任务信息-->
                 <div class="card">
                     <div class="card-header bg-info">
@@ -126,12 +135,12 @@
                             <th>被保人手机号</th>
                             <th>派车状态</th>
                             </thead>
-                            <tr v-for="(value,index) in accidentList">
-                                <th scope="row">{{index + 1}}</th>
-                                <td>({{value.accidentLocation_x}},{{value.accidentLocation_y}})</td>
-                                <td>{{value.accidentTime.toLocaleString()}}</td>
-                                <td>{{value.tel}}</td>
-                                <td>{{value.status}}</td>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>(<%=task.getLocationX()%>,<%=task.getLocationY()%>)</td>
+                                <td><%=task.getTime().toString()%></td>
+                                <td><%=task.getTel()%></td>
+                                <td><%=task.getProcess()%></td>
                             </tr>
                         </table>
                     </div>
@@ -142,6 +151,11 @@
                         <h4>派车进度</h4>
                     </div>
                     <div class="card-body">
+                            <%
+                                Car freeCar=(Car) request.getAttribute("freeCar");
+                                CarRequest carRequest=(CarRequest) request.getAttribute("carReq");
+                                if(freeCar!=null||carRequest!=null){
+                            %>
                         <!--进度导航-->
                         <ul class="nav-step step-anchor">
                             <li class="nav-step-item" id="nav-step1">
@@ -171,79 +185,114 @@
                         </ul>
                         <!--进度表单内容-->
                         <div v-if="step==1">
-                            <h5 style="color: #aaaaaa;font-size: 15px">已找到以下空闲车辆</h5>
-                            <table class="table table-striped">
-                                <thead>
-                                <th>#</th>
-                                <th>车牌号</th>
-                                <th>车辆状态</th>
-                                <th>车辆所在区域</th>
-                                </thead>
-                                <th scope="row">1</th>
-                                <td>浙J888U</td>
-                                <td>空闲</td>
-                                <td>D区</td>
-                            </table>
-                            <hr>
-                            <div class="nav-step-button">
-                                <button class="btn btn-secondary" disabled="true">上一步</button>
-                                <button class="btn btn-secondary" @click="nextStep">下一步</button>
-                            </div>
+                            <%
+                            if(freeCar!=null){
+                            %>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <th>#</th>
+                                    <th>车牌号</th>
+                                    <th>车辆状态</th>
+                                    <th>车辆所在区域</th>
+                                    </thead>
+                                    <th scope="row">1</th>
+                                    <td><%=freeCar.getCarId()%></td>
+                                    <td><%=freeCar.getStatus()%></td>
+                                    <td><%=freeCar.getPnumber()%></td>
+                                </table>
+                            <%
+                                }
+                            %>
+                                <hr>
+                                <div class="nav-step-button">
+                                    <button class="btn btn-secondary" disabled="true">上一步</button>
+                                    <button class="btn btn-secondary" @click="nextStep">下一步</button>
+                                </div>
                         </div>
-                        <div v-if="step==2">
-                            <h5 style="color: #aaaaaa;font-size: 15px">已自动生成派车单</h5>
-                            <form action="#" method="post" onsubmit="return false;">
+                        <div v-if="step!=1">
+                          <%--派车请求表单提交，等待管理员审核--%>
+                            <form action="BollowReq" method="post">
+                            <%
+                            if(freeCar!=null){
+                            %>
                                 <div class="form-group">
                                     <label for="carNum">车牌号</label>
-                                    <input class="form-control" type="text" id="carNum" name="carNum" value="浙J888U" readonly="readonly">
-                                </div>
-                                <div class="form-group">
-                                    <label for="startTime">出车时间</label>
-                                    <input class="form-control" type="text" id="startTime" name="startTime" v-bind:value="new Date().toLocaleString()" readonly="readonly">
+                                    <input class="form-control" type="text" id="carNum" name="carNum" value="<%=freeCar.getCarId()%>" readonly="readonly">
                                 </div>
                                 <div class="form-group">
                                     <label for="taskLocation">任务地点</label>
-                                    <input class="form-control" type="text" id="taskLocation" name="taskLocation" value="(11,11)" readonly="readonly">
+                                    <input class="form-control" type="text" id="taskLocation" name="taskLocation" value="<%="("+task.getLocationX()+","+task.getLocationY()+")"%>" readonly="readonly">
                                 </div>
                                 <div class="form-group">
-                                    <label for="personNum">查勘人员工号</label>
-                                    <input class="form-control" type="text" id="personNum" name="personNum" value="C114514" readonly="readonly">
+                                    <label for="surveyorId">查勘人员工号</label>
+                                    <input class="form-control" type="text" id="surveyorId" name="surveyorId" value="<%=UserInfo.UserId%>" readonly="readonly">
                                 </div>
-                            <hr>
-                            <div class="nav-step-button">
-                                <button class="btn btn-secondary" @click="preStep">上一步</button>
-                                <button class="btn btn-primary" type="submit"  @click="nextStep">提交审核</button>
-                            </div>
+                           <%
+                               }else{
+                           %>
+                                <div class="form-group">
+                                    <label for="carNum">车牌号</label>
+                                    <input class="form-control" type="text" id="carNum" name="carNum" value="<%=carRequest.getCarNum()%>" readonly="readonly">
+                                </div>
+                                <div class="form-group">
+                                    <label for="taskLocation">任务地点</label>
+                                    <input class="form-control" type="text" id="taskLocation" name="taskLocation" value="<%="("+carRequest.getDestX()+","+carRequest.getDestY()+")"%>" readonly="readonly">
+                                </div>
+                                <div class="form-group">
+                                    <label for="surveyorId">出车时间</label>
+                                    <input class="form-control" type="text" id="surveyorId" name="surveyorId" value="<%=carRequest.getTime()==null? null:carRequest.getTime().toLocaleString()%>" readonly="readonly">
+                                </div>
+                                <div class="form-group">
+                                    <label for="surveyorId">查勘人员工号</label>
+                                    <input class="form-control" type="text" id="surveyorId" name="surveyorId" value="<%=UserInfo.UserId%>" readonly="readonly">
+                                </div>
+                           <%
+                               }
+                           %>
+                                <hr>
+
+                                <div class="nav-step-button" v-if="step==2">
+                                    <button class="btn btn-secondary" @click="preStep">上一步</button>
+                                    <button class="btn btn-primary" type="submit">提交审核</button>
+                                </div>
                             </form>
                         </div>
                         <div v-if="step==3">
-                            <h5 style="color: #aaaaaa;font-size: 15px">审核状态</h5>
-                          <p class="text-center" style="font-weight: bold">审核中,请耐心等待</p>
+                            <p class="text-center" style="font-weight: bold">审核中,请耐心等待</p>
                             <hr>
                         </div>
                         <div v-if="step==4">
-                            <h5 style="color: #aaaaaa;font-size: 15px">审核已完成</h5>
-                                <div class="form-group">
-                                    <label for="carNum-complete">车牌号</label>
-                                    <input class="form-control" type="text" id="carNum-complete" name="carNum" value="浙J888U" readonly="readonly">
-                                </div>
-                                <div class="form-group">
-                                    <label for="startTime-complete">出车时间</label>
-                                    <input class="form-control" type="text" id="startTime-complete" name="startTime" v-bind:value="new Date().toLocaleString()" readonly="readonly">
-                                </div>
-                                <div class="form-group">
-                                    <label for="taskLocation-complete">任务地点</label>
-                                    <input class="form-control" type="text" id="taskLocation-complete" name="taskLocation" value="(11,11)" readonly="readonly">
-                                </div>
-                                <div class="form-group">
-                                    <label for="personNum-complete">查勘人员工号</label>
-                                    <input class="form-control" type="text" id="personNum-complete" name="personNum" value="C114514" readonly="readonly">
-                                </div>
-                            <hr>
                             <p class="text-center"><button class="btn btn-primary btn-block">打印派车单</button></p>
                         </div>
+                            <%
+                                }else{
+                             %>
+                            <p class="text-center" style="margin-bottom: 0;font-size:medium">当前没有空闲车辆</p>
+                            <%
+                                }
+                            %>
+
                     </div>
                 </div>
+                <%
+                }else{
+                %>
+                <!--提示没有需要执行的任务-->
+                <div class="card">
+                    <div class="card-header bg-warning">
+                        <h4>当前没有待执行查勘任务</h4>
+                        <ul class="card-actions">
+                            <li><i class="mdi mdi-alert-outline"></i></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-center" style="margin-bottom: 0;font-size:medium">派车请求功能不可用</p>
+                    </div>
+                </div>
+                <%
+                    }
+                %>
+
             </div>
 
         </div>
@@ -257,20 +306,8 @@
 
 <script>
     let data = {
-        username: "赵子龙",
-        accidentList: [
-            {
-                accidentLocation_x: 11,
-                accidentLocation_y: 11,
-                accidentTime: new Date("2021/11/28 07:12:12"),
-                tel: "13422233335",
-                status: "未派车"
-            }
-        ],
-        step: 1
+        step:<%=session.getAttribute("borrowCarStep")%>
     };
-
-
     var app = new Vue({
         el: "#vue-tpl",
         data: data,
