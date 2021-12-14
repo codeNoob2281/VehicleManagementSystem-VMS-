@@ -95,7 +95,7 @@
       <div id="topbar-right">
         <img class="img-avatar img-avatar-48 m-r-10" src="${pageContext.request.contextPath}/images/user-logo.jpg" alt="用户头像"/>
         <a href="javascript:void(0)" data-toggle="dropdown">
-          <span>${sessionScope.user}<span class="caret"></span></span>
+          <span>${user}<span class="caret"></span></span>
         </a>
         <ul class="dropdown-menu dropdown-menu-right">
           <li><a href="#"><i class="mdi mdi-account"></i> 个人信息</a></li>
@@ -112,8 +112,6 @@
   <main class="lyear-layout-content" style="margin-left: 5%;width: 90%;margin-top: 10px;">
     <div class="row">
       <div class="col-lg-12">
-
-
         <c:choose>
           <c:when test="${task!=null}">
             <!--查勘任务信息-->
@@ -180,11 +178,11 @@
                 <c:choose>
                   <c:when test="${carRequest!=null}">
 <%--                    车辆请求非空，说明已请求，但正在审核或审核完成了但在使用中未归还--%>
-                    <%--派车请求表单提交，等待管理员审核--%>
-                    <form>
+                    <%--派车请求表单提交--%>
+                    <form method="post" action="printCarSendForm">
                       <div class="form-group">
                         <label for="carNum">车牌号</label>
-                        <input class="form-control" type="text" id="carNum" name="carNum" value="${carRequest.licencePlate}" readonly="readonly">
+                        <input class="form-control" type="text" id="carNum" name="licencePlate" value="${carRequest.licencePlate}" readonly="readonly">
                       </div>
                       <div class="form-group">
                         <label for="taskLocation">任务地点</label>
@@ -206,7 +204,7 @@
                       <hr>
                       </c:if>
                       <c:if test="${'工作中'.equals(carRequest.requestState)}">
-                      <p class="text-center"><button class="btn btn-primary btn-block">打印派车单</button></p>
+                      <p class="text-center"><button class="btn btn-primary btn-block" type="submit" formtarget="_blank">打印派车单</button></p>
                       </c:if>
                     </form>
                   </c:when>
@@ -259,15 +257,8 @@
                         <p class="text-center" style="margin-bottom: 0;font-size:medium">当前有未处理或处理中违章，无法借车</p>
                       </c:otherwise>
                     </c:choose>
-
-
                   </c:when>
                 </c:choose>
-
-
-
-
-
               </div>
             </div>
           </c:when>
@@ -286,20 +277,9 @@
             </div>
           </c:otherwise>
         </c:choose>
-
-
-
-
-
-
       </div>
-
     </div>
-
-
   </main>
-
-
 </div>
 
 
@@ -358,8 +338,6 @@
             }
           }
        })
-
-
       }
     }
   })

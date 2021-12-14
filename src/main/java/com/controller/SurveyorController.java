@@ -162,4 +162,20 @@ public class SurveyorController {
         }
         return "redirect:/Surveyor/undoViolation";
     }
+
+    /**
+     * 跳转到派车单打印页面
+     */
+    @RequestMapping(value = "/printCarSendForm",method = RequestMethod.POST)
+    public String getCarSendRequestPage(@RequestParam("licencePlate")String licencePlate,
+                                        @RequestParam("taskLocation")String taskLocation,
+                                        @RequestParam("surveyorId")String surveyorId,
+                                        @RequestParam("outTime")String outTime,
+                                        Model model){
+        model.addAttribute("licencePlate",licencePlate);
+        model.addAttribute("taskLocation",taskLocation);
+        model.addAttribute("surveyorId",surveyorId);
+        model.addAttribute("outTime",outTime);
+        return "Surveyor/print/carSendForm";
+    }
 }
