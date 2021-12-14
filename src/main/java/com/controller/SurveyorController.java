@@ -2,6 +2,7 @@ package com.controller;
 
 
 import com.model.CarRequest;
+import com.model.ViolationFileUpload;
 import com.po.Car;
 import com.po.CarSendRecord;
 import com.po.Task;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -127,8 +129,37 @@ public class SurveyorController {
 
     }
 
+    @RequestMapping(value = "/historyViolation",method = RequestMethod.GET)
+    public String getViolationHistoryPage(HttpServletRequest request ,Model model){
+        //从session中获取查勘员id
+        String surveyorId =(String) request.getSession().getAttribute("user");
+        //获取查勘员所有违章记录
+        List<Violation> violationHistoryList=violationService.findAllViolations(surveyorId);
+        model.addAttribute("violationHistoryList",violationHistoryList);
+        return "Surveyor/historyViolation";
+    }
+    @RequestMapping(value = "/undoViolation",method = RequestMethod.GET)
+    public String getUndoViolationPage(HttpServletRequest request ,Model model){
+        //从session中获取查勘员id
+        String surveyorId =(String) request.getSession().getAttribute("user");
+        //获取查勘员未处理与处理中的违章记录
+        List<Violation> undoViolationList=violationService.findAllUnfinishedViolations(surveyorId);
+        model.addAttribute("undoViolationList",undoViolationList);
+        return "Surveyor/undoViolation";
+    }
+    @RequestMapping(value = "doViolation",method = RequestMethod.POST)
+    public String doViolation(ViolationFileUpload fileUpload, Model model){
 
-
-
-
+        try{
+            //获取违章记录编号
+            int violationId=fileUpload.getViolationId();
+            //获取违章处理证明材料字节流
+          byte []image=fileUpload.getProveMaterial().getBytes();
+          //上传证明材料
+          violationService.submitMaterial(violationId,image);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return "redirect:/Surveyor/undoViolation";
+    }
 }
